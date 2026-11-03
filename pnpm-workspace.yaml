@@ -1,0 +1,8 @@
+packages:
+  - domain
+  - trpc
+  - service
+  - web
+  - tools
+
+strictPeerDependencies: true

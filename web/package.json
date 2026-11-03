@@ -1,0 +1,14 @@
+{
+	"name": "@wizard/web",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"start": "node --experimental-strip-types src/index.ts"
+	},
+	"dependencies": {
+		"@trpc/client": "^11.23.0",
+		"@trpc/server": "^11.23.0",
+		"@wizard/trpc": "workspace:*",
+		"zod": "^4.6.7"
+	}
+}

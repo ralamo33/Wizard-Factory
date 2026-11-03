@@ -1,0 +1,11 @@
+{
+	"name": "@wizard/trpc",
+	"private": true,
+	"type": "module",
+	"exports": "./src/appRouter.ts",
+	"dependencies": {
+		"@trpc/server": "^11.23.0",
+		"@wizard/domain": "workspace:*",
+		"zod": "^4.6.7"
+	}
+}

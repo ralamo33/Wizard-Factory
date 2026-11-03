@@ -1,0 +1,8 @@
+{
+	"name": "@wizard/tools",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"check:tsconfig": "node --experimental-strip-types src/checkTsconfigs.ts"
+	}
+}
