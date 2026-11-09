@@ -7,4 +7,4 @@
 - [ ] **Document the subset in README** — README is just the title twice; write down the rules and the reasoning so agents can read them.
 - [ ] **Commit the work** — domain/trpc/store split, `wizard/*` export rules, and the `web` Vite/React move are uncommitted. `pnpm check` passes.
 - [x] **Enforce module boundaries** — `wizard/schema-exports` (`domain` exports only zod schemas and `z.infer` types) and `wizard/function-exports` (`trpc` exports only functions, allowlist `appRouter`, `publicProcedure`), in `exportRules.ts`. User state moved to `store`.
-- [ ] **Decide on `functional/immutable-data` for `trpc`** — trial run flagged only `userMap.set`, which now lives in `store`, so it would pass today.
+- [x] **`functional/immutable-data` for `trpc`** — on for `trpc/src/**/*.ts` only; mutation belongs in `store`.

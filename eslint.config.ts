@@ -122,6 +122,7 @@ export default defineConfig(
     files: ["trpc/src/**/*.ts"],
     rules: {
       "wizard/function-exports": ["error", { allow: ["appRouter", "publicProcedure"] }],
+      "functional/immutable-data": "error",
     },
   },
   {
