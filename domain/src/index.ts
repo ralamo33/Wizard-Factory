@@ -1,1 +1,1 @@
-export { createUser, type InvalidUser, type User } from "./user.ts";
+export { type User, userSchema } from "./user.ts";

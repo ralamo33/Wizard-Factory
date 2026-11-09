@@ -3,9 +3,14 @@
 	"private": true,
 	"type": "module",
 	"exports": "./src/appRouter.ts",
+	"scripts": {
+		"test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
+	},
 	"dependencies": {
+		"@praha/byethrow": "0.13.0",
 		"@trpc/server": "^11.23.0",
 		"@wizard/domain": "workspace:*",
+		"@wizard/store": "workspace:*",
 		"zod": "^4.6.7"
 	}
 }

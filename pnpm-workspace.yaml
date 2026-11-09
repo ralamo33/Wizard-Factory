@@ -1,6 +1,7 @@
 packages:
   - domain
   - trpc
+  - store
   - service
   - web
   - tools

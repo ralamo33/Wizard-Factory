@@ -7,7 +7,6 @@
 		"test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
 	},
 	"dependencies": {
-		"@praha/byethrow": "0.13.0",
 		"zod": "^4.6.7"
 	}
 }

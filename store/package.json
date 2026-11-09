@@ -1,0 +1,12 @@
+{
+	"name": "@wizard/store",
+	"private": true,
+	"type": "module",
+	"exports": "./src/userStore.ts",
+	"scripts": {
+		"test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
+	},
+	"dependencies": {
+		"@wizard/domain": "workspace:*"
+	}
+}

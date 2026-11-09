@@ -1,18 +1,10 @@
-import { Result } from "@praha/byethrow";
+import { z } from "zod";
 
-export interface User {
-  readonly name: string;
-  readonly age: number;
-}
+export const userSchema = z
+  .object({
+    name: z.string().refine((name) => name.trim() !== ""),
+    age: z.number().int().nonnegative(),
+  })
+  .readonly();
 
-export type InvalidUser = { readonly type: "EmptyName" } | { readonly type: "InvalidAge"; readonly age: number };
-
-export const createUser = (input: User): Result.Result<User, InvalidUser> => {
-  if (input.name.trim() === "") {
-    return Result.fail({ type: "EmptyName" });
-  }
-  if (!Number.isInteger(input.age) || input.age < 0) {
-    return Result.fail({ type: "InvalidAge", age: input.age });
-  }
-  return Result.succeed(input);
-};
+export type User = z.infer<typeof userSchema>;

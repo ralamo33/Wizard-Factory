@@ -1,23 +1,10 @@
 # Tasks
 
-- [x] **Remove stray lockfiles** — `service/pnpm-lock.yaml` and `web/pnpm-lock.yaml` deleted; the root lockfile is the only one.
-- [x] **Expand the custom rule set** — each rule has a test in `tools/src/lintRules.test.ts`. Chosen:
-  - `linterOptions.noInlineConfig: true`
-  - `@typescript-eslint/consistent-type-assertions` `{assertionStyle: "never"}`
-  - `@typescript-eslint/ban-ts-comment` with all options `true`
-  - `@typescript-eslint/explicit-function-return-type`
-  - `@typescript-eslint/switch-exhaustiveness-check`, `strict-boolean-expressions`, `require-array-sort-compare`, `promise-function-async`, `no-shadow`, `strict-void-return`
-  - `eqeqeq`, `no-implicit-coercion`, `no-param-reassign` (`props: false`), `no-await-in-loop`, `curly`
-  - `functional/no-throw-statements`, `functional/no-try-statements`, `functional/no-loop-statements`
-  - `no-console`, `no-warning-comments`, `unicorn/prefer-node-protocol`, `unicorn/no-null`, `unicorn/filename-case`, `@typescript-eslint/naming-convention`
-  - `import-x/no-default-export` (config files like `eslint.config.ts` need an exemption), `import-x/no-cycle`, `import-x/no-extraneous-dependencies`
-  - `functional/no-let`, `@typescript-eslint/prefer-readonly-parameter-types`
-  - byethrow (`@praha/byethrow-oxlint`, loaded into ESLint, not Oxlint): `consistent-namespace`, `no-ambiguous-error-type`, `no-ambiguous-success-type`, `no-negated-type-guards`, `prefer-result-async`, `prefer-result-maybe-async`
-  - Rejected: `functional/immutable-data`, `functional/no-classes`, `functional/no-this-expressions`, `import-x/no-relative-packages`, `@typescript-eslint/no-restricted-imports`
-  - Handled elsewhere: package layering (different dependency), size/complexity rules
 - [ ] **Enforce checks automatically** — pre-commit hook, CI workflow, and a Claude Code hook that runs `pnpm check` after edits so agent output can't land unchecked.
 - [ ] **Add a formatter** — Biome is disabled in `.vscode/settings.json` with nothing in its place; quotes and semicolons are inconsistent across files.
-- [ ] **Populate `domain/`** — `User` and `createUser` (byethrow `Result`) now live in `domain/src/user.ts`. `trpc` and `web` use `domain`'s `User`. Still to do: `trpc` calls `createUser` (needs a decision on how a failed `Result` reaches the client without `throw`).
-- [ ] **Tests for every package** — `tools` and `domain` have tests; `trpc`, `service`, `web` have none.
+- [ ] **Wire `createUser` into the router** — `userSchema` (zod, all rules) lives in `domain/src/user.ts`; `createUser = Result.parse(userSchema)` lives in `trpc/src/createUser.ts`. The router's `createUser` mutation still validates with its own inline `z.object` and doesn't call it — needs a decision on how a failed `Result` reaches the client without `throw` (or use `.input(userSchema)` and let tRPC return `BAD_REQUEST`).
+- [ ] **Tests for every package** — `tools`, `domain`, `trpc`, `store` have tests; `service`, `web` have none. `trpc` has no router tests yet.
 - [ ] **Document the subset in README** — README is just the title twice; write down the rules and the reasoning so agents can read them.
-- [ ] **Commit the lint setup** — eslint config, rule tests, TS 6.0.3 pin, and the router/web rewrites are all uncommitted. Fix the current `pnpm check` failures first.
+- [ ] **Commit the work** — domain/trpc/store split, `wizard/*` export rules, and the `web` Vite/React move are uncommitted. `pnpm check` passes.
+- [x] **Enforce module boundaries** — `wizard/schema-exports` (`domain` exports only zod schemas and `z.infer` types) and `wizard/function-exports` (`trpc` exports only functions, allowlist `appRouter`, `publicProcedure`), in `exportRules.ts`. User state moved to `store`.
+- [ ] **Decide on `functional/immutable-data` for `trpc`** — trial run flagged only `userMap.set`, which now lives in `store`, so it would pass today.

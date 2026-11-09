@@ -283,6 +283,60 @@ await test("ignores eslint-disable comments for byethrow rules", async () => {
   );
 });
 
+const projectEslint = new ESLint({ cwd: root });
+
+const packageFileRules = async (packageName: string, code: string): Promise<readonly (string | null)[]> => {
+  const fixtureDir = mkdtempSync(join(root, packageName, "src", "fixture-"));
+  const filePath = join(fixtureDir, "fixture.ts");
+  writeFileSync(filePath, code);
+  const results = await projectEslint.lintFiles(filePath);
+  rmSync(fixtureDir, { recursive: true });
+  const [result] = results;
+  assert.ok(result !== undefined);
+  assert.equal(result.fatalErrorCount, 0, result.messages[0]?.message);
+  return result.messages.map((message) => message.ruleId);
+};
+
+await test("bans function exports from domain", async () => {
+  const rules = await packageFileRules("domain", "export const one = (): number => 1;\n");
+  assert.ok(rules.includes("wizard/schema-exports"));
+});
+
+await test("bans interface exports from domain", async () => {
+  const rules = await packageFileRules("domain", "export interface Named {\n  readonly name: string;\n}\n");
+  assert.ok(rules.includes("wizard/schema-exports"));
+});
+
+await test("allows zod schemas and inferred types in domain", async () => {
+  const rules = await packageFileRules(
+    "domain",
+    'import { z } from "zod";\nexport const nameSchema = z.string();\nexport type Name = z.infer<typeof nameSchema>;\n',
+  );
+  assert.equal(rules.includes("wizard/schema-exports"), false);
+});
+
+await test("bans non-function exports from trpc", async () => {
+  const rules = await packageFileRules("trpc", "export const limit = 10;\n");
+  assert.ok(rules.includes("wizard/function-exports"));
+});
+
+await test("allows function exports from trpc", async () => {
+  const rules = await packageFileRules("trpc", "export const one = (): number => 1;\n");
+  assert.equal(rules.includes("wizard/function-exports"), false);
+});
+
+const mapMutation = 'const counts = new Map<string, number>();\nexport const count = (): void => {\n  counts.set("a", 1);\n};\n';
+
+await test("bans data mutation in trpc", async () => {
+  const rules = await packageFileRules("trpc", mapMutation);
+  assert.ok(rules.includes("functional/immutable-data"));
+});
+
+await test("allows data mutation in store", async () => {
+  const rules = await packageFileRules("store", mapMutation);
+  assert.equal(rules.includes("functional/immutable-data"), false);
+});
+
 await test("bans import cycles", async (context) => {
   const cycleDir = mkdtempSync(join(root, "tools", "src", "cycle-"));
   context.after(() => {

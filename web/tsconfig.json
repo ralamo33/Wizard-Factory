@@ -1,3 +1,11 @@
 {
-	"extends": "../tsconfig.base.json"
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"lib": ["es2024", "DOM", "DOM.Iterable"],
+		"module": "preserve",
+		"moduleResolution": "bundler",
+		"types": ["node", "vite/client"]
+	},
+	"include": ["src", "vite.config.ts"]
 }

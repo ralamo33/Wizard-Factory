@@ -1,24 +1,18 @@
-import type {User} from '@wizard/domain'
+import {findUser, listUsers, saveUser} from '@wizard/store'
 import {z} from 'zod'
 import {publicProcedure, router} from './trpc.ts'
-
-const userMap = new Map<string, User>()
 
 export const appRouter = router({
   userById: publicProcedure
     .input(z.string())
-    .query((opts) => {
-      const {input: id} = opts;
-      return userMap.get(id);
-    }),
+    .query((opts) => findUser(opts.input)),
   createUser: publicProcedure
     .input(z.object({name: z.string(), age: z.number().int()}))
     .mutation((opts) => {
-      const {input} = opts;
-      userMap.set(String(userMap.size + 1), input);
+      saveUser(opts.input);
     }),
   listUsers: publicProcedure
-  .query(() => [...userMap.values()])
+  .query(() => listUsers())
 })
 
 export type AppRouter = typeof appRouter;

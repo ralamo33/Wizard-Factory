@@ -3,14 +3,28 @@ import byethrow from "@praha/byethrow-oxlint";
 import type { ESLint } from "eslint";
 import { createNodeResolver, importX } from "eslint-plugin-import-x";
 import functional from "eslint-plugin-functional";
+import reactHooks from "eslint-plugin-react-hooks";
 import unicorn from "eslint-plugin-unicorn";
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import tseslint from "typescript-eslint";
+import { exportRules } from "./exportRules.ts";
+
+const namingConvention = [
+  { selector: "default", format: ["camelCase"], leadingUnderscore: "allow" },
+  { selector: "import", format: ["camelCase", "PascalCase"] },
+  { selector: "function", format: ["camelCase", "PascalCase"] },
+  { selector: "variable", format: ["camelCase", "UPPER_CASE", "PascalCase"], leadingUnderscore: "allow" },
+  { selector: "typeLike", format: ["PascalCase"] },
+  { selector: "objectLiteralProperty", format: null },
+  { selector: "variable", types: ["boolean"], format: ["PascalCase"], prefix: ["is", "has", "should", "can"] },
+];
 
 export default defineConfig(
+  globalIgnores(["**/routeTree.gen.ts"]),
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
+  reactHooks.configs.flat["recommended-latest"],
   {
     linterOptions: {
       noInlineConfig: true,
@@ -27,10 +41,12 @@ export default defineConfig(
       functional,
       unicorn,
       "import-x": importX,
+      // typescript-eslint's RuleModule type doesn't match ESLint's Plugin type; runtime is compatible.
+      wizard: exportRules as unknown as ESLint.Plugin,
     },
     settings: {
-      "import-x/extensions": [".ts", ".js"],
-      "import-x/parsers": { "@typescript-eslint/parser": [".ts"] },
+      "import-x/extensions": [".ts", ".tsx", ".js"],
+      "import-x/parsers": { "@typescript-eslint/parser": [".ts", ".tsx"] },
       "import-x/resolver-next": [createNodeResolver()],
     },
     rules: {
@@ -62,15 +78,7 @@ export default defineConfig(
       "@typescript-eslint/no-shadow": "error",
       "@typescript-eslint/strict-void-return": "error",
       "@typescript-eslint/prefer-readonly-parameter-types": ["error", { ignoreInferredTypes: true }],
-      "@typescript-eslint/naming-convention": [
-        "error",
-        { selector: "default", format: ["camelCase"], leadingUnderscore: "allow" },
-        { selector: "import", format: ["camelCase", "PascalCase"] },
-        { selector: "variable", format: ["camelCase", "UPPER_CASE", "PascalCase"], leadingUnderscore: "allow" },
-        { selector: "typeLike", format: ["PascalCase"] },
-        { selector: "objectLiteralProperty", format: null },
-        { selector: "variable", types: ["boolean"], format: ["PascalCase"], prefix: ["is", "has", "should", "can"] },
-      ],
+      "@typescript-eslint/naming-convention": ["error", ...namingConvention],
       eqeqeq: "error",
       "no-implicit-coercion": "error",
       "no-param-reassign": ["error", { props: false }],
@@ -102,6 +110,35 @@ export default defineConfig(
       "import-x/no-default-export": "off",
       "unicorn/no-null": "off",
       "@typescript-eslint/consistent-type-assertions": "off",
+    },
+  },
+  {
+    files: ["domain/src/**/*.ts"],
+    rules: {
+      "wizard/schema-exports": "error",
+    },
+  },
+  {
+    files: ["trpc/src/**/*.ts"],
+    rules: {
+      "wizard/function-exports": ["error", { allow: ["appRouter", "publicProcedure"] }],
+    },
+  },
+  {
+    files: ["exportRules.ts"],
+    rules: {
+      "@typescript-eslint/prefer-readonly-parameter-types": "off",
+      "@typescript-eslint/naming-convention": [
+        "error",
+        ...namingConvention,
+        { selector: "objectLiteralMethod", filter: "^Program$", format: null },
+      ],
+    },
+  },
+  {
+    files: ["web/vite.config.ts"],
+    rules: {
+      "import-x/no-default-export": "off",
     },
   },
   {
