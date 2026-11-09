@@ -1,0 +1,1 @@
+This is essentially a buisness layer server for the project. It should use bounded contexts & domain driven design to keep the project comprehensible at scale. Limit the number of dependencies available.

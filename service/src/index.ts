@@ -1,2 +1,1 @@
-export { createUser } from "./createUser.ts";
-export { findUser, listUsers, saveUser } from "@wizard/store";
+export { createUser, findUser, listUsers, saveUser } from "./identity/index.ts";
