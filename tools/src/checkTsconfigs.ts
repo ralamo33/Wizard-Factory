@@ -14,8 +14,8 @@ const violations = leafConfigs.filter((path) => {
   return JSON.stringify(parsed) !== requiredLeaf;
 });
 
-for (const path of violations) {
+violations.forEach((path) => {
   console.error(`${path} must be exactly ${requiredLeaf}; shared settings belong in tsconfig.base.json`);
-}
+});
 
 process.exitCode = violations.length === 0 ? 0 : 1;

@@ -10,15 +10,19 @@ const trpc = createTRPCClient<AppRouter>({
   ]
 })
 
-const x: number = ''
+await trpc.createUser.mutate({name: "Ryan", age: 27})
+await trpc.createUser.mutate({name: "Karen", age: 27})
 
-const ryanUser = trpc.createUser.mutate({name: "Ryan", age: 27})
+const escapeHtml = (text: string): string =>
+  text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;')
 
-const page = (users: {name: string, age: number}[]) => `<!doctype html>
+const page = (users: readonly Readonly<{name: string, age: number}>[]): string => `<!doctype html>
 <title>Users</title>
-<p>Hello world</p>`
+<p>Hello world</p>
+<ul>
+${users.map((user) => `<li>${escapeHtml(user.name)}, ${String(user.age)}</li>`).join('\n')}
+</ul>`
 
-const webServer = createServer( async (req, res) => {
-  const users = await trpc.listUsers.query();
-  res.writeHead(200, {'Content-Type': 'text/html'}).end(page(users))
-})
+createServer((_req, res) => {
+  void trpc.listUsers.query().then((users) => res.writeHead(200, {'Content-Type': 'text/html'}).end(page(users)))
+}).listen(8080)

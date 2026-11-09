@@ -4,12 +4,23 @@
 	"type": "module",
 	"packageManager": "pnpm@10.27.0",
 	"scripts": {
-		"typecheck": "pnpm -r exec tsc",
+		"typecheck": "tsc && pnpm -r --no-bail exec tsc",
+		"lint": "eslint .",
 		"check:tsconfig": "pnpm --filter @wizard/tools check:tsconfig",
-		"check": "pnpm check:tsconfig && pnpm typecheck"
+		"test": "pnpm -r --no-bail test",
+		"check": "pnpm check:tsconfig && pnpm typecheck && pnpm lint && pnpm test"
 	},
 	"devDependencies": {
+		"@eslint/js": "^10.0.1",
+		"@praha/byethrow-oxlint": "^0.13.0",
 		"@types/node": "^22.12.0",
-		"typescript": "^7.0.2"
+		"eslint": "^10.14.0",
+		"eslint-plugin-functional": "^10.0.1",
+		"eslint-plugin-import-x": "^4.18.1",
+		"eslint-plugin-unicorn": "^79.0.0",
+		"jiti": "^2.7.0",
+		"oxlint": "^1.93.0",
+		"typescript": "~6.0.3",
+		"typescript-eslint": "^8.72.1"
 	}
 }

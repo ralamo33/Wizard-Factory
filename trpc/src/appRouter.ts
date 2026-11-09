@@ -1,32 +1,29 @@
-import {publicProcedure, router} from './trpc.ts'
 import {z} from 'zod'
+import {publicProcedure, router} from './trpc.ts'
 
-type User = {
+interface User {
   name: string,
   age: number,
 }
 
-hi 
 
-const userMap: Record<string, User> = {}
-let nextId = 1;
+const userMap = new Map<string, User>()
 
 export const appRouter = router({
   userById: publicProcedure
     .input(z.string())
-    .query(async (opts) => {
+    .query((opts) => {
       const {input: id} = opts;
-      return userMap[id];
+      return userMap.get(id);
     }),
   createUser: publicProcedure
     .input(z.object({name: z.string(), age: z.number().int()}))
-    .mutation(async (opts) => {
+    .mutation((opts) => {
       const {input} = opts;
-      userMap[str(nextId)] = input;
-      nextId += 1;
+      userMap.set(String(userMap.size + 1), input);
     }),
   listUsers: publicProcedure
-  .query(async () => userMap.values())
+  .query(() => [...userMap.values()])
 })
 
 export type AppRouter = typeof appRouter;

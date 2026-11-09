@@ -17,6 +17,7 @@
 		"isolatedModules": true,
 		"forceConsistentCasingInFileNames": true,
 		"libReplacement": false,
+		"skipLibCheck": true,
 
 		"target": "es2024",
 		"lib": ["es2024"],
