@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { JSX } from "react";
+
 import { OrderCard } from "../components/orderCard.tsx";
 import { OrderSigil } from "../components/orderSigil.tsx";
 import { SectionHeading } from "../components/sectionHeading.tsx";
@@ -20,20 +21,29 @@ const Hero = (): JSX.Element => (
     </div>
     <div className="spin-rev pointer-events-none absolute top-1/2 left-1/2 aspect-square w-[min(120vw,1000px)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-sky-200/10" />
     <p className="rise-in relative font-display text-sm tracking-[0.5em] text-sky-200/70 uppercase sm:text-base">The Oathpact is renewed</p>
-    <h1 className="rise-in stormlight relative mt-6 font-title text-5xl leading-tight font-bold sm:text-7xl lg:text-8xl" style={{ animationDelay: "0.2s" }}>
+    <h1
+      className="rise-in stormlight relative mt-6 font-title text-5xl leading-tight font-bold sm:text-7xl lg:text-8xl"
+      style={{ animationDelay: "0.2s" }}
+    >
       Welcome to the
       <br />
       Knights Radiant
     </h1>
     <p className="rise-in relative mt-8 max-w-2xl text-xl text-slate-300 italic sm:text-2xl" style={{ animationDelay: "0.5s" }}>
-      The Everstorm has come. The Desolation returns. Ten Orders stand once more against the dark — and a place among
-      them awaits those who would speak the Words.
+      The Everstorm has come. The Desolation returns. Ten Orders stand once more against the dark — and a place among them awaits those who would
+      speak the Words.
     </p>
     <div className="rise-in relative mt-12 flex flex-col gap-4 sm:flex-row" style={{ animationDelay: "0.8s" }}>
-      <a href="#squires" className="rounded-full bg-sky-300 px-8 py-3 font-display tracking-widest text-slate-950 uppercase shadow-[0_0_30px_rgba(125,211,252,0.6)] transition hover:scale-105 hover:bg-white hover:shadow-[0_0_60px_rgba(224,242,254,0.9)]">
+      <a
+        href="#squires"
+        className="rounded-full bg-sky-300 px-8 py-3 font-display tracking-widest text-slate-950 uppercase shadow-[0_0_30px_rgba(125,211,252,0.6)] transition hover:scale-105 hover:bg-white hover:shadow-[0_0_60px_rgba(224,242,254,0.9)]"
+      >
         Speak the Words
       </a>
-      <a href="#orders" className="rounded-full border border-sky-200/40 px-8 py-3 font-display tracking-widest text-sky-100 uppercase backdrop-blur transition hover:border-sky-200 hover:bg-sky-200/10">
+      <a
+        href="#orders"
+        className="rounded-full border border-sky-200/40 px-8 py-3 font-display tracking-widest text-sky-100 uppercase backdrop-blur transition hover:border-sky-200 hover:bg-sky-200/10"
+      >
         The Ten Orders
       </a>
     </div>
@@ -78,6 +88,7 @@ const TenOrders = (): JSX.Element => (
 
 const Squires = (): JSX.Element => {
   const { data: users } = useSuspenseQuery(trpc.listUsers.queryOptions());
+
   return (
     <section id="squires" className="relative px-4 py-24">
       <div className="mx-auto max-w-4xl">

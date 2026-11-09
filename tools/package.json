@@ -1,14 +1,9 @@
 {
-	"name": "@wizard/tools",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"check:tsconfig": "node --experimental-strip-types src/checkTsconfigs.ts",
-		"test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
-	},
-	"devDependencies": {
-		"dependency-cruiser": "18.7.2",
-		"eslint": "^10.14.0",
-		"typescript-eslint": "^8.72.1"
-	}
+  "name": "@wizard/tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:tsconfig": "node --experimental-strip-types src/checkTsconfigs.ts",
+    "test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
+  }
 }

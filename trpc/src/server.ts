@@ -1,9 +1,9 @@
-import { createHTTPServer } from '@trpc/server/adapters/standalone'
-import {appRouter} from './appRouter.ts'
+import { createHTTPServer } from "@trpc/server/adapters/standalone";
+
+import { appRouter } from "./appRouter.ts";
 
 const server = createHTTPServer({
   router: appRouter,
-})
+});
 
-
-server.listen(3000);
+server.listen(Number(process.env["API_PORT"] ?? "3000"));

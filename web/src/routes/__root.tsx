@@ -1,6 +1,7 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import type { JSX } from "react";
+
 import { StormSky } from "../components/stormSky.tsx";
 
 const RootLayout = (): JSX.Element => (

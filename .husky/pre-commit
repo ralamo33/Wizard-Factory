@@ -1,0 +1,3 @@
+gitleaks git --pre-commit --staged --redact --verbose
+pnpm exec lint-staged
+pnpm depcruise:affected

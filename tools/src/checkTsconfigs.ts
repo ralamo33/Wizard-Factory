@@ -16,6 +16,7 @@ const extendsBase = (parsed: unknown): boolean =>
 
 const isValid = (name: string, path: string): boolean => {
   const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
+
   return browserPackages.has(name) ? extendsBase(parsed) : JSON.stringify(parsed) === requiredLeaf;
 };
 

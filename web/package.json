@@ -1,31 +1,32 @@
 {
-	"name": "@wizard/web",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"start": "vite",
-		"build": "vite build",
-		"preview": "vite preview"
-	},
-	"dependencies": {
-		"@tanstack/react-query": "^5.107.1",
-		"@tanstack/react-router": "^1.170.46",
-		"@trpc/client": "^11.23.0",
-		"@trpc/server": "^11.23.0",
-		"@trpc/tanstack-react-query": "^11.23.0",
-		"@wizard/domain": "workspace:*",
-		"@wizard/trpc": "workspace:*",
-		"react": "^19.3.1",
-		"react-dom": "^19.3.1",
-		"zod": "^4.6.7"
-	},
-	"devDependencies": {
-		"@tailwindcss/vite": "^4.3.5",
-		"@tanstack/router-plugin": "^1.169.0",
-		"@types/react": "^19.3.0",
-		"@types/react-dom": "^19.3.0",
-		"@vitejs/plugin-react": "^6.3.0",
-		"tailwindcss": "^4.3.5",
-		"vite": "^8.3.7"
-	}
+  "name": "@wizard/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.107.1",
+    "@tanstack/react-router": "^1.170.46",
+    "@trpc/client": "^11.23.0",
+    "@trpc/server": "catalog:",
+    "@trpc/tanstack-react-query": "^11.23.0",
+    "@wizard/domain": "workspace:*",
+    "@wizard/trpc": "workspace:*",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "@tanstack/router-plugin": "^1.169.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "tailwindcss": "^4.3.5",
+    "vite": "^8.3.7"
+  }
 }

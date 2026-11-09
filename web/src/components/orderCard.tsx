@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+
 import type { Order } from "../orders.ts";
 
 type OrderCardProps = Readonly<{ order: Order }>;

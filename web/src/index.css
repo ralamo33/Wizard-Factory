@@ -11,7 +11,9 @@
   animation: pulse-gem 4s ease-in-out infinite;
 }
 @keyframes pulse-gem {
-  50% { filter: drop-shadow(0 0 2px currentColor) drop-shadow(0 0 22px currentColor); }
+  50% {
+    filter: drop-shadow(0 0 2px currentColor) drop-shadow(0 0 22px currentColor);
+  }
 }
 
 .sphere {
@@ -19,24 +21,50 @@
   bottom: -20px;
   border-radius: 9999px;
   background: radial-gradient(circle at 35% 35%, white, currentColor 45%, transparent 70%);
-  box-shadow: 0 0 12px currentColor, 0 0 28px currentColor;
+  box-shadow:
+    0 0 12px currentColor,
+    0 0 28px currentColor;
   animation: rise linear infinite;
   opacity: 0.8;
 }
 @keyframes rise {
-  0% { transform: translate(0, 0); opacity: 0; }
-  10% { opacity: 0.9; }
-  50% { transform: translate(30px, -55vh); }
-  100% { transform: translate(-20px, -110vh); opacity: 0; }
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(30px, -55vh);
+  }
+  100% {
+    transform: translate(-20px, -110vh);
+    opacity: 0;
+  }
 }
 
-.lightning { animation: flash 9s infinite; }
+.lightning {
+  animation: flash 9s infinite;
+}
 @keyframes flash {
-  0%, 91%, 100% { opacity: 0; }
-  92% { opacity: 0.55; }
-  93% { opacity: 0.1; }
-  94% { opacity: 0.7; }
-  96% { opacity: 0; }
+  0%,
+  91%,
+  100% {
+    opacity: 0;
+  }
+  92% {
+    opacity: 0.55;
+  }
+  93% {
+    opacity: 0.1;
+  }
+  94% {
+    opacity: 0.7;
+  }
+  96% {
+    opacity: 0;
+  }
 }
 
 .stormlight {
@@ -47,14 +75,34 @@
   animation: shimmer 6s linear infinite;
   text-shadow: 0 0 40px rgba(125, 211, 252, 0.35);
 }
-@keyframes shimmer { to { background-position: 300% 0; } }
+@keyframes shimmer {
+  to {
+    background-position: 300% 0;
+  }
+}
 
-.spin-slow { animation: spin 80s linear infinite; }
-.spin-rev { animation: spin 120s linear infinite reverse; }
+.spin-slow {
+  animation: spin 80s linear infinite;
+}
+.spin-rev {
+  animation: spin 120s linear infinite reverse;
+}
 
-.rise-in { animation: rise-in 1.2s cubic-bezier(.2, .7, .2, 1) both; }
-@keyframes rise-in { from { opacity: 0; transform: translateY(24px); filter: blur(6px); } }
+.rise-in {
+  animation: rise-in 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(6px);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+  }
 }

@@ -10,8 +10,10 @@ const zodInferTypes: readonly string[] = ["z.infer", "z.input", "z.output"];
 const exportsOf = (services: ParserServicesWithTypeInformation, program: TSESTree.Program): readonly Exported[] => {
   const checker = services.program.getTypeChecker();
   const moduleSymbol = checker.getSymbolAtLocation(services.esTreeNodeToTSNodeMap.get(program));
+
   return (moduleSymbol === undefined ? [] : checker.getExportsOfModule(moduleSymbol)).map((exportSymbol) => {
     const declaration = exportSymbol.declarations?.[0];
+
     return {
       name: exportSymbol.getName(),
       symbol: (exportSymbol.flags & ts.SymbolFlags.Alias) === 0 ? exportSymbol : checker.getAliasedSymbol(exportSymbol),
@@ -23,9 +25,7 @@ const exportsOf = (services: ParserServicesWithTypeInformation, program: TSESTre
 const isValue = (symbol: ts.Symbol): boolean => (symbol.flags & ts.SymbolFlags.Value) !== 0;
 
 const isZodInferAlias = (declaration: ts.Declaration): boolean =>
-  ts.isTypeAliasDeclaration(declaration) &&
-  ts.isTypeReferenceNode(declaration.type) &&
-  zodInferTypes.includes(declaration.type.typeName.getText());
+  ts.isTypeAliasDeclaration(declaration) && ts.isTypeReferenceNode(declaration.type) && zodInferTypes.includes(declaration.type.typeName.getText());
 
 const isSchemaExport = (checker: ts.TypeChecker, symbol: ts.Symbol): boolean =>
   (!isValue(symbol) || checker.getTypeOfSymbol(symbol).getProperty("_zod") !== undefined) &&
@@ -46,6 +46,7 @@ const schemaExports = createRule({
   create(context) {
     const services = ESLintUtils.getParserServices(context);
     const checker = services.program.getTypeChecker();
+
     return {
       Program(program): void {
         exportsOf(services, program)
@@ -76,6 +77,7 @@ const functionExports = createRule<FunctionExportsOptions, "notFunction">({
   create(context, [{ allow }]) {
     const services = ESLintUtils.getParserServices(context);
     const checker = services.program.getTypeChecker();
+
     return {
       Program(program): void {
         exportsOf(services, program)

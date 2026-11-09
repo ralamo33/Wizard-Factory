@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { userSchema } from "@wizard/domain";
-import { type JSX, useState } from "react";
+import { type JSX, useId, useState } from "react";
+
 import { trpc } from "../trpc.ts";
 
 const inputClass =
@@ -8,6 +9,8 @@ const inputClass =
 
 export const SwearOathForm = (): JSX.Element => {
   const queryClient = useQueryClient();
+  const nameId = useId();
+  const ageId = useId();
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const candidate = userSchema.safeParse({ name, age: Number(age) });
@@ -26,18 +29,36 @@ export const SwearOathForm = (): JSX.Element => {
       className="mt-10 flex flex-col gap-3 sm:flex-row"
       onSubmit={(event) => {
         event.preventDefault();
+
         if (candidate.success) {
           swearOath.mutate(candidate.data);
         }
       }}
     >
-      <input className={inputClass} placeholder="Your name" value={name} onChange={(event) => { setName(event.target.value); }} />
+      <label htmlFor={nameId} className="sr-only">
+        Name
+      </label>
       <input
+        id={nameId}
+        className={inputClass}
+        placeholder="Your name"
+        value={name}
+        onChange={(event) => {
+          setName(event.target.value);
+        }}
+      />
+      <label htmlFor={ageId} className="sr-only">
+        Age
+      </label>
+      <input
+        id={ageId}
         className={`${inputClass} sm:w-32`}
         placeholder="Age"
         inputMode="numeric"
         value={age}
-        onChange={(event) => { setAge(event.target.value); }}
+        onChange={(event) => {
+          setAge(event.target.value);
+        }}
       />
       <button
         type="submit"

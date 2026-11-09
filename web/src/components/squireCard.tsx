@@ -1,11 +1,13 @@
 import type { User } from "@wizard/domain";
 import type { JSX } from "react";
+
 import { orderAt, stormlightColor } from "../orders.ts";
 
 type SquireCardProps = Readonly<{ user: User; index: number }>;
 
 export const SquireCard = ({ user, index }: SquireCardProps): JSX.Element => {
   const order = orderAt(index);
+
   return (
     <li
       className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-4 backdrop-blur-md transition hover:border-current hover:bg-white/[0.07]"

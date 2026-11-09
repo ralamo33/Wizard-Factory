@@ -1,15 +1,14 @@
 {
-	"name": "@wizard/trpc",
-	"private": true,
-	"type": "module",
-	"exports": "./src/appRouter.ts",
-	"scripts": {
-		"start": "node --experimental-strip-types src/server.ts"
-	},
-	"dependencies": {
-		"@trpc/server": "^11.23.0",
-		"@wizard/domain": "workspace:*",
-		"@wizard/service": "workspace:*",
-		"zod": "^4.6.7"
-	}
+  "name": "@wizard/trpc",
+  "private": true,
+  "type": "module",
+  "exports": "./src/appRouter.ts",
+  "scripts": {
+    "start": "node --experimental-strip-types src/server.ts"
+  },
+  "dependencies": {
+    "@trpc/server": "catalog:",
+    "@wizard/service": "workspace:*",
+    "zod": "catalog:"
+  }
 }

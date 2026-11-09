@@ -1,30 +1,53 @@
 {
-	"name": "wizard",
-	"private": true,
-	"type": "module",
-	"packageManager": "pnpm@10.27.0",
-	"scripts": {
-		"typecheck": "tsc && pnpm -r --no-bail exec tsc",
-		"lint": "eslint .",
-		"depcruise": "depcruise --config .dependency-cruiser.json domain/src store/src service/src trpc/src web/src",
-		"check:tsconfig": "pnpm --filter @wizard/tools check:tsconfig",
-		"test": "pnpm -r --no-bail test",
-		"check": "pnpm check:tsconfig && pnpm typecheck && pnpm lint && pnpm depcruise && pnpm test"
-	},
-	"devDependencies": {
-		"@eslint/js": "^10.0.1",
-		"@praha/byethrow-oxlint": "^0.13.0",
-		"@types/node": "^22.12.0",
-		"@typescript-eslint/utils": "8.72.1",
-		"dependency-cruiser": "18.7.2",
-		"eslint": "^10.14.0",
-		"eslint-plugin-functional": "^10.0.1",
-		"eslint-plugin-import-x": "^4.18.1",
-		"eslint-plugin-react-hooks": "^7.1.1",
-		"eslint-plugin-unicorn": "^79.0.0",
-		"jiti": "^2.7.0",
-		"oxlint": "^1.93.0",
-		"typescript": "~6.0.3",
-		"typescript-eslint": "^8.72.1"
-	}
+  "name": "wizard",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.27.0",
+  "scripts": {
+    "typecheck": "tsc && pnpm -r --no-bail exec tsc",
+    "prepare": "husky",
+    "lint": "eslint --cache .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "depcruise": "depcruise --config .dependency-cruiser.json domain/src store/src service/src trpc/src web/src",
+    "depcruise:affected": "pnpm depcruise --affected HEAD",
+    "check:tsconfig": "pnpm --filter @wizard/tools check:tsconfig",
+    "test": "pnpm -r --no-bail test",
+    "test:e2e": "pnpm --filter @wizard/web test:e2e",
+    "knip": "knip",
+    "sherif": "sherif",
+    "check": "pnpm check:tsconfig && pnpm typecheck && pnpm format:check && pnpm lint && pnpm sherif && pnpm knip && pnpm depcruise && pnpm test"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css,html,yml,yaml}": "prettier --write"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@praha/byethrow-oxlint": "^0.13.0",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/node": "^22.12.0",
+    "@typescript-eslint/utils": "8.72.1",
+    "dependency-cruiser": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-functional": "^10.0.1",
+    "eslint-plugin-import-x": "^4.18.1",
+    "eslint-plugin-playwright": "^2.12.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-simple-import-sort": "^14.0.0",
+    "eslint-plugin-unicorn": "^79.0.0",
+    "husky": "^9.1.7",
+    "jiti": "^2.7.0",
+    "knip": "^6.44.2",
+    "lint-staged": "^17.6.0",
+    "oxlint": "^1.93.0",
+    "prettier": "^3.9.10",
+    "sherif": "^1.13.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "catalog:"
+  }
 }
