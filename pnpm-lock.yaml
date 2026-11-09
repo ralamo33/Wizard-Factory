@@ -92,6 +92,9 @@ importers:
       '@trpc/server':
         specifier: ^11.23.0
         version: 11.23.0(typescript@6.0.3)
+      '@wizard/domain':
+        specifier: workspace:*
+        version: link:../domain
       '@wizard/trpc':
         specifier: workspace:*
         version: link:../trpc

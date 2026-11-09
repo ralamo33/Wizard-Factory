@@ -1,11 +1,6 @@
+import type {User} from '@wizard/domain'
 import {z} from 'zod'
 import {publicProcedure, router} from './trpc.ts'
-
-interface User {
-  name: string,
-  age: number,
-}
-
 
 const userMap = new Map<string, User>()
 

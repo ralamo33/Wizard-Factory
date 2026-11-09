@@ -17,7 +17,7 @@
   - Handled elsewhere: package layering (different dependency), size/complexity rules
 - [ ] **Enforce checks automatically** — pre-commit hook, CI workflow, and a Claude Code hook that runs `pnpm check` after edits so agent output can't land unchecked.
 - [ ] **Add a formatter** — Biome is disabled in `.vscode/settings.json` with nothing in its place; quotes and semicolons are inconsistent across files.
-- [ ] **Populate `domain/`** — `User` and `createUser` (byethrow `Result`) now live in `domain/src/user.ts`. Still to do: `trpc` and `web` use `domain`'s `User` instead of their own copies, and `trpc` calls `createUser`.
+- [ ] **Populate `domain/`** — `User` and `createUser` (byethrow `Result`) now live in `domain/src/user.ts`. `trpc` and `web` use `domain`'s `User`. Still to do: `trpc` calls `createUser` (needs a decision on how a failed `Result` reaches the client without `throw`).
 - [ ] **Tests for every package** — `tools` and `domain` have tests; `trpc`, `service`, `web` have none.
 - [ ] **Document the subset in README** — README is just the title twice; write down the rules and the reasoning so agents can read them.
 - [ ] **Commit the lint setup** — eslint config, rule tests, TS 6.0.3 pin, and the router/web rewrites are all uncommitted. Fix the current `pnpm check` failures first.
