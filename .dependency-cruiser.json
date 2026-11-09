@@ -1,0 +1,56 @@
+{
+  "forbidden": [
+    {
+      "name": "store-only-from-service",
+      "comment": "Mutable state is reached only through service.",
+      "severity": "error",
+      "from": { "pathNot": "^(store|service)/" },
+      "to": { "path": "^store/" }
+    },
+    {
+      "name": "service-only-from-trpc",
+      "comment": "Business logic is reached only through the trpc API.",
+      "severity": "error",
+      "from": { "pathNot": "^(service|trpc)/" },
+      "to": { "path": "^service/" }
+    },
+    {
+      "name": "trpc-only-from-web",
+      "comment": "The API is consumed only by web.",
+      "severity": "error",
+      "from": { "pathNot": "^(trpc|web)/" },
+      "to": { "path": "^trpc/" }
+    },
+    {
+      "name": "nothing-imports-web",
+      "comment": "web is the top of the graph.",
+      "severity": "error",
+      "from": { "pathNot": "^web/" },
+      "to": { "path": "^web/" }
+    },
+    {
+      "name": "service-no-ancestor-imports",
+      "comment": "Files in service never import from a parent directory.",
+      "severity": "error",
+      "from": { "path": "^service/" },
+      "to": { "ancestor": true }
+    },
+    {
+      "name": "not-to-unresolvable",
+      "comment": "An unresolved import would slip past every path rule above.",
+      "severity": "error",
+      "from": {},
+      "to": { "couldNotResolve": true }
+    }
+  ],
+  "options": {
+    "doNotFollow": { "path": "node_modules" },
+    "moduleSystems": ["es6"],
+    "tsPreCompilationDeps": true,
+    "enhancedResolveOptions": {
+      "exportsFields": ["exports"],
+      "conditionNames": ["import", "default"],
+      "extensions": [".ts", ".tsx", ".js"]
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import {findUser, listUsers, saveUser} from '@wizard/store'
+import {findUser, listUsers, saveUser} from '@wizard/service'
 import {z} from 'zod'
 import {publicProcedure, router} from './trpc.ts'
 

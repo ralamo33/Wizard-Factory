@@ -6,15 +6,17 @@
 	"scripts": {
 		"typecheck": "tsc && pnpm -r --no-bail exec tsc",
 		"lint": "eslint .",
+		"depcruise": "depcruise --config .dependency-cruiser.json domain/src store/src service/src trpc/src web/src",
 		"check:tsconfig": "pnpm --filter @wizard/tools check:tsconfig",
 		"test": "pnpm -r --no-bail test",
-		"check": "pnpm check:tsconfig && pnpm typecheck && pnpm lint && pnpm test"
+		"check": "pnpm check:tsconfig && pnpm typecheck && pnpm lint && pnpm depcruise && pnpm test"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
 		"@praha/byethrow-oxlint": "^0.13.0",
 		"@types/node": "^22.12.0",
 		"@typescript-eslint/utils": "8.72.1",
+		"dependency-cruiser": "18.7.2",
 		"eslint": "^10.14.0",
 		"eslint-plugin-functional": "^10.0.1",
 		"eslint-plugin-import-x": "^4.18.1",

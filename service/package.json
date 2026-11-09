@@ -2,12 +2,13 @@
 	"name": "@wizard/service",
 	"private": true,
 	"type": "module",
+	"exports": "./src/index.ts",
 	"scripts": {
-		"start": "node --experimental-strip-types src/index.ts"
+		"test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
 	},
 	"dependencies": {
-		"@trpc/server": "^11.23.0",
-		"@wizard/trpc": "workspace:*",
-		"zod": "^4.6.7"
+		"@praha/byethrow": "0.13.0",
+		"@wizard/domain": "workspace:*",
+		"@wizard/store": "workspace:*"
 	}
 }

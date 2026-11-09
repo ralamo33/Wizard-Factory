@@ -119,10 +119,15 @@ export default defineConfig(
     },
   },
   {
+    files: ["service/src/**/*.ts"],
+    rules: {
+      "wizard/function-exports": "error",
+    },
+  },
+  {
     files: ["trpc/src/**/*.ts"],
     rules: {
       "wizard/function-exports": ["error", { allow: ["appRouter", "publicProcedure"] }],
-      "functional/immutable-data": "error",
     },
   },
   {

@@ -1,9 +1,2 @@
-import { createHTTPServer } from '@trpc/server/adapters/standalone'
-import {appRouter} from '@wizard/trpc'
-
-const server = createHTTPServer({
-  router: appRouter,
-})
-
-
-server.listen(3000);
+export { createUser } from "./createUser.ts";
+export { findUser, listUsers, saveUser } from "@wizard/store";
