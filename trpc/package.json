@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@trpc/server": "catalog:",
+    "@wizard/domain": "workspace:*",
     "@wizard/service": "workspace:*",
     "zod": "catalog:"
   }

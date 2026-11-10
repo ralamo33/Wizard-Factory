@@ -2,8 +2,12 @@ import type { MotionProps } from "motion/react";
 
 import { spring, staggerStep } from "./motionTokens.ts";
 
-export const riseIn = (step: number): Pick<MotionProps, "initial" | "animate" | "transition"> => ({
+type RiseInProps = Pick<MotionProps, "initial" | "animate" | "whileInView" | "viewport" | "transition">;
+
+const shown = { opacity: 1, y: 0 };
+
+export const riseIn = (step: number, trigger: "load" | "inView"): RiseInProps => ({
   initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
+  ...(trigger === "load" ? { animate: shown } : { whileInView: shown, viewport: { once: true } }),
   transition: { ...spring.smooth, delay: step * staggerStep },
 });

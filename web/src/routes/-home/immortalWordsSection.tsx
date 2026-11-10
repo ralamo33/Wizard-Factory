@@ -12,7 +12,7 @@ export const ImmortalWordsSection = (): JSX.Element => (
       <SectionHeading eyebrow="The First Ideal" title="The Immortal Words" />
       <ol className="mt-14 space-y-8">
         {immortalWords.map((line, i) => (
-          <motion.li key={line} {...riseIn(i)} className="font-display text-3xl text-foreground sm:text-5xl">
+          <motion.li key={line} {...riseIn(i, "inView")} className="font-display text-3xl text-foreground sm:text-5xl">
             <span className="drop-shadow-lg drop-shadow-primary/70">{line}</span>
           </motion.li>
         ))}

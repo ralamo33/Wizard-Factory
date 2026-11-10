@@ -12,10 +12,22 @@ type TextFieldProps = Readonly<{
   error: string | undefined;
   onChange: (value: string) => void;
   inputMode?: "numeric";
+  type?: "text" | "date";
   className?: string;
 }>;
 
-export const TextField = ({ id, name, label, placeholder, value, error, onChange, inputMode, className = "" }: TextFieldProps): JSX.Element => {
+export const TextField = ({
+  id,
+  name,
+  label,
+  placeholder,
+  value,
+  error,
+  onChange,
+  inputMode,
+  type = "text",
+  className = "",
+}: TextFieldProps): JSX.Element => {
   const errorId = `${id}-error`;
 
   return (
@@ -26,6 +38,7 @@ export const TextField = ({ id, name, label, placeholder, value, error, onChange
       <input
         id={id}
         name={name}
+        type={type}
         className={inputClass}
         placeholder={placeholder}
         inputMode={inputMode}

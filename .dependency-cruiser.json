@@ -36,6 +36,129 @@
       "to": { "ancestor": true }
     },
     {
+      "name": "no-junk-drawer-folders",
+      "comment": "Cross-context code lives only in shared/; anything else shared is a missing bounded context.",
+      "severity": "error",
+      "from": {},
+      "to": { "path": "^(domain|store|service)/src/(utils|common|helpers|lib)/" }
+    },
+    {
+      "name": "contexts-are-flat",
+      "comment": "A context that needs subfolders is two contexts.",
+      "severity": "error",
+      "from": {},
+      "to": { "path": "^(domain|store|service)/src/[^/]+/[^/]+/" }
+    },
+    {
+      "name": "service-context-public-api-only",
+      "comment": "Contexts reach each other only through the other context's index.ts.",
+      "severity": "error",
+      "from": { "path": "^service/src/([^/]+)/" },
+      "to": { "path": "^service/src/[^/]+/(?!index\\.ts$)", "pathNot": "^service/src/$1/" }
+    },
+    {
+      "name": "service-root-reexports-context-index-only",
+      "comment": "service/src/index.ts re-exports each context's index.ts, nothing else.",
+      "severity": "error",
+      "from": { "path": "^service/src/index\\.ts$" },
+      "to": { "path": "^service/src/", "pathNot": "^service/src/[^/]+/index\\.ts$" }
+    },
+    {
+      "name": "service-context-owns-its-store",
+      "comment": "A service context reaches only its own store context; other contexts' data goes through their service API.",
+      "severity": "error",
+      "from": { "path": "^service/src/([^/]+)/" },
+      "to": { "path": "^store/src/", "pathNot": "^store/src/$1/" }
+    },
+    {
+      "name": "web-no-ancestor-imports",
+      "comment": "A component may import its children in subfolders, never the reverse.",
+      "severity": "error",
+      "from": { "path": "^web/src/" },
+      "to": { "ancestor": true }
+    },
+    {
+      "name": "generic-components-are-leaves",
+      "comment": "Generic components are prop-only: nothing else from web/src and no @wizard packages.",
+      "severity": "error",
+      "from": { "path": "^web/src/genericComponents/" },
+      "to": { "pathNot": "^web/src/genericComponents/|node_modules/" }
+    },
+    {
+      "name": "api-only-from-domain-view-queries",
+      "comment": "A domain view's queries.ts is its only door to trpc; main.tsx wires the queryClient.",
+      "severity": "error",
+      "from": { "pathNot": "^web/src/(domainViews/[^/]+/queries\\.ts|main\\.tsx)$" },
+      "to": { "path": "^web/src/api/" }
+    },
+    {
+      "name": "domain-views-via-index",
+      "comment": "Domain views reach each other only through the other domain view's index.ts.",
+      "severity": "error",
+      "from": { "path": "^web/src/domainViews/([^/]+)/" },
+      "to": { "path": "^web/src/domainViews/[^/]+/(?!index\\.ts$)", "pathNot": "^web/src/domainViews/$1/" }
+    },
+    {
+      "name": "routes-use-domain-views-via-index",
+      "comment": "Routes reach domain views only through the domain view's index.ts.",
+      "severity": "error",
+      "from": { "path": "^web/src/routes/" },
+      "to": { "path": "^web/src/domainViews/[^/]+/(?!index\\.ts$)" }
+    },
+    {
+      "name": "nothing-imports-routes",
+      "comment": "Only the generated route tree wires routes; route-private folders stay private to routes.",
+      "severity": "error",
+      "from": { "pathNot": "^web/src/(routes/|routeTree\\.gen\\.ts$)" },
+      "to": { "path": "^web/src/routes/" }
+    },
+    {
+      "name": "route-code-has-one-parent",
+      "comment": "Code in a - folder has exactly one importer. A second importer means it's shared: move it to genericComponents or domainViews, or up into the shared parent.",
+      "severity": "error",
+      "from": {},
+      "module": {
+        "path": "^web/src/routes/(?:|.*/)-[^/]+/",
+        "pathNot": "^web/src/routes/-root/",
+        "numberOfDependentsMoreThan": 1
+      }
+    },
+    {
+      "name": "root-route-code-imported-at-most-three-times",
+      "comment": "routes/-root code with more than 3 importers has outgrown the root route; promote it to domainViews or genericComponents.",
+      "severity": "error",
+      "from": {},
+      "module": { "path": "^web/src/routes/-root/", "numberOfDependentsMoreThan": 3 }
+    },
+    {
+      "name": "display-components-no-data",
+      "comment": "Only containers (route files and *Section.tsx) read data; display components get it as props.",
+      "severity": "error",
+      "from": { "path": "^web/src/.+\\.tsx$", "pathNot": "^web/src/routes(?!.*/-)/.*\\.tsx$|Section\\.tsx$" },
+      "to": { "path": "^web/src/(domainViews/[^/]+/queries\\.ts|routes/(?:|.*/)-[^/]+/.+\\.ts)$" }
+    },
+    {
+      "name": "domain-view-index-only-from-containers",
+      "comment": "A domain view's index.ts re-exports its data hooks, so only containers may import it.",
+      "severity": "error",
+      "from": { "pathNot": "^web/src/routes(?!.*/-)/.*\\.tsx$|Section\\.tsx$" },
+      "to": { "path": "^web/src/domainViews/[^/]+/index\\.ts$" }
+    },
+    {
+      "name": "contexts-global-below-domain-views",
+      "comment": "App-wide contexts sit under domain views and routes, so they never import them.",
+      "severity": "error",
+      "from": { "path": "^web/src/contextsGlobal/" },
+      "to": { "path": "^web/src/(domainViews|routes)/" }
+    },
+    {
+      "name": "contexts-global-only-from-containers",
+      "comment": "App-wide contexts are data; only containers (route files and *Section.tsx) mount or read them.",
+      "severity": "error",
+      "from": { "pathNot": "^web/src/routes(?!.*/-)/.*\\.tsx$|Section\\.tsx$|^web/src/contextsGlobal/|^web/src/main\\.tsx$" },
+      "to": { "path": "^web/src/contextsGlobal/" }
+    },
+    {
       "name": "not-to-unresolvable",
       "comment": "An unresolved import would slip past every path rule above.",
       "severity": "error",

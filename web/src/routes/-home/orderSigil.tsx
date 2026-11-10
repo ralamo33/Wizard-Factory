@@ -25,8 +25,8 @@ export const OrderSigil = ({ points }: OrderSigilProps): JSX.Element => (
     {points.map((point, i) => {
       const { x, y } = pointOnCircle(i, points.length, 40);
 
-      return <circle key={point.name} cx={x} cy={y} r="3.2" fill="currentColor" className="gem text-primary motion-safe:animate-gem-pulse" />;
+      return <circle key={point.name} cx={x} cy={y} r="3.2" fill="currentColor" className="gem text-primary" />;
     })}
-    <circle cx="50" cy="50" r="8" className="gem fill-foreground text-primary motion-safe:animate-gem-pulse" />
+    <circle cx="50" cy="50" r="8" className="gem fill-foreground text-primary" />
   </svg>
 );

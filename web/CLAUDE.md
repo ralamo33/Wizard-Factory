@@ -47,6 +47,12 @@ zustand, jotai and redux are banned. `createContext` is allowed only in `context
 
 A context file exports only `XProvider` and `useX`. One context holds state and actions together. The provider value is memoised. `useX` throws when the provider is missing; context files are the only place `throw` is allowed.
 
+## Lists
+
+- Filtering, sorting and paging always belong to the server; the client never sorts or slices domain lists.
+- Lists of domain data use `genericComponents/dataTable.tsx`. Raw `<table>`, `<thead>`, `<tbody>`, `<tr>`, `<th>`, `<td>` and `<caption>` are banned outside `genericComponents`.
+- List state lives in URL search params, validated with the domain list query schema (`validateSearch: listUsersQuerySchema`).
+
 ## Forms
 
 TanStack Form, validated with the schema from `@wizard/domain`; `web` never imports `zod`. Fields are `genericComponents/textField.tsx`, which requires a `label`. Raw `<input>`, `<select>` and `<textarea>` are banned outside `genericComponents`. Never disable submit for invalid input: submit shows the errors and focuses the first invalid field.
@@ -64,6 +70,13 @@ TanStack Form, validated with the schema from `@wizard/domain`; `web` never impo
 - Durations, easings, springs and staggers come only from the motion tokens: `src/index.css` for CSS, `genericComponents/motionTokens.ts` for Motion. Raw durations, `cubic-bezier()`, literal spring values and arbitrary `duration-[…]`/`ease-[…]` are banned.
 - Animate the values the `motion` skill's performance guidance recommends. Judgment.
 - CSS animations use `motion-safe:`; Motion respects reduced motion through `MotionConfig` in `main.tsx`.
+
+## When to animate
+
+- By default do not animate
+- Animate to direct attention
+- Animate to react to user inputs, these are typically routine actions that should recieve routine animations, such as opening a Drawer
+- Animate for highly emotional moments, these should recieve special animations
 
 ## E2E locators
 

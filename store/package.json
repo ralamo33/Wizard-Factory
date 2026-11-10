@@ -2,7 +2,9 @@
   "name": "@wizard/store",
   "private": true,
   "type": "module",
-  "exports": "./src/userStore.ts",
+  "exports": {
+    "./identity": "./src/identity/index.ts"
+  },
   "scripts": {
     "test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
   },

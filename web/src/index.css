@@ -19,73 +19,12 @@
   --default-transition-duration: var(--transition-duration-fast);
   --default-transition-timing-function: var(--ease-standard);
 
-  --animate-gem-pulse: gem-pulse 4s ease-in-out infinite;
-  --animate-shimmer: shimmer 6s linear infinite;
-  --animate-spin-slow: orbit 80s linear infinite;
-  --animate-spin-reverse: orbit 120s linear infinite reverse;
-  --animate-lightning: lightning 9s infinite;
-  --animate-rise-in: rise-in var(--transition-duration-slow) var(--ease-enter) both;
-  --animate-sphere-rise: sphere-rise 20s linear infinite;
+  /* 12 alternating runs end under 5s, so no pause control is needed (WCAG 2.2.2) */
+  --animate-scroll-hint: scroll-hint var(--transition-duration-slow) var(--ease-standard) 12 alternate;
 
-  @keyframes gem-pulse {
-    50% {
-      transform: scale(1.12);
-    }
-  }
-
-  @keyframes shimmer {
+  @keyframes scroll-hint {
     to {
-      background-position: 300% 0;
-    }
-  }
-
-  @keyframes orbit {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @keyframes lightning {
-    0%,
-    91%,
-    100% {
-      opacity: 0;
-    }
-    92% {
-      opacity: 0.55;
-    }
-    93% {
-      opacity: 0.1;
-    }
-    94% {
-      opacity: 0.7;
-    }
-    96% {
-      opacity: 0;
-    }
-  }
-
-  @keyframes rise-in {
-    from {
-      opacity: 0;
-      transform: translateY(24px);
-    }
-  }
-
-  @keyframes sphere-rise {
-    0% {
-      transform: translate(0, 0);
-      opacity: 0;
-    }
-    10% {
-      opacity: 0.9;
-    }
-    50% {
-      transform: translate(30px, -55vh);
-    }
-    100% {
-      transform: translate(-20px, -110vh);
-      opacity: 0;
+      transform: translateY(25%);
     }
   }
 }
@@ -142,15 +81,7 @@
   --ring: var(--color-blue-500);
 }
 
-:root[data-theme="light"] .lightning {
-  display: none;
-}
-
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme]) .lightning {
-    display: none;
-  }
-
   :root:not([data-theme]) {
     color-scheme: light;
     --background: var(--color-white);
@@ -205,23 +136,6 @@
 
 .gem {
   filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 14px currentColor);
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.sphere {
-  position: absolute;
-  bottom: -20px;
-  border-radius: 9999px;
-  background: radial-gradient(circle at 35% 35%, var(--color-foreground), currentColor 45%, transparent 70%);
-  box-shadow:
-    0 0 12px currentColor,
-    0 0 28px currentColor;
-  opacity: 0.8;
-}
-
-.lightning {
-  opacity: 0;
 }
 
 .stormlight {
@@ -233,7 +147,6 @@
     var(--color-accent),
     var(--color-foreground)
   );
-  background-size: 300% 100%;
   background-clip: text;
   color: transparent;
   text-shadow: 0 0 40px color-mix(in oklab, var(--color-primary) 35%, transparent);
