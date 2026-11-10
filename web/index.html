@@ -4,6 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Welcome to the Knights Radiant</title>
+    <script>
+      {
+        const theme = localStorage.getItem("theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.dataset.theme = theme;
+        }
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -12,7 +20,7 @@
     />
     <link rel="stylesheet" href="/src/index.css" />
   </head>
-  <body class="min-h-screen overflow-x-hidden bg-[#03060f] font-body text-lg text-slate-200 antialiased">
+  <body class="min-h-screen overflow-x-hidden bg-background font-body text-lg text-foreground antialiased">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

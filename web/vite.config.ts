@@ -8,6 +8,9 @@ const apiPort = process.env["API_PORT"] ?? "3000";
 
 export default defineConfig({
   plugins: [tanstackRouter({ target: "react", autoCodeSplitting: true }), react(), tailwindcss()],
+  build: {
+    chunkSizeWarningLimit: 5000,
+  },
   preview: {
     port,
     strictPort: true,

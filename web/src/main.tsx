@@ -1,10 +1,12 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { MotionConfig } from "motion/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
+import { queryClient } from "./api/trpc.ts";
+import { ThemeProvider } from "./contextsGlobal/themeContext.tsx";
 import { routeTree } from "./routeTree.gen.ts";
-import { queryClient } from "./trpc.ts";
 
 const router = createRouter({ routeTree, context: { queryClient } });
 
@@ -20,7 +22,11 @@ if (rootElement !== null) {
   createRoot(rootElement).render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <ThemeProvider>
+          <MotionConfig reducedMotion="user">
+            <RouterProvider router={router} />
+          </MotionConfig>
+        </ThemeProvider>
       </QueryClientProvider>
     </StrictMode>,
   );

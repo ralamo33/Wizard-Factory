@@ -14,6 +14,7 @@ export default defineConfig({
   reporter: isCi ? [["github"], ["html", { open: "never" }]] : "html",
   use: {
     baseURL: `http://localhost:${webPort}`,
+    reducedMotion: "reduce",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
