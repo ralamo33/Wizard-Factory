@@ -1,4 +1,6 @@
 import type { SortDirection } from "@wizard/domain";
+import { and, asc, desc, eq, gte, ilike, inArray, lt, lte, type SQL } from "drizzle-orm";
+import type { PgColumn } from "drizzle-orm/pg-core";
 
 export type ListQuery<Sort extends string, Filters> = Readonly<{
   sortBy?: Sort | undefined;
@@ -10,88 +12,82 @@ export type ListQuery<Sort extends string, Filters> = Readonly<{
 
 export type ListPage<Row> = Readonly<{ items: readonly Row[]; hasNextPage: boolean }>;
 
-type Matcher<Row, Value> = (row: Row, value: Value) => boolean;
+type Condition<Value> = (value: Value) => SQL | undefined;
 
-export type ListSpec<Row, Sort extends string, Filters> = Readonly<{
-  sort: Readonly<Record<Sort, (row: Row) => string | number>>;
-  filters: { readonly [K in keyof Filters]-?: Matcher<Row, NonNullable<Filters[K]>> };
+export type ListSpec<Sort extends string, Filters> = Readonly<{
+  sort: Readonly<Record<Sort, PgColumn>>;
+  filters: { readonly [K in keyof Filters]-?: Condition<NonNullable<Filters[K]>> };
 }>;
 
 type Range = Readonly<{ min?: number | undefined; max?: number | undefined }>;
 type DateRange = Readonly<{ from?: string | undefined; to?: string | undefined }>;
 
-const isoDay = (isoDate: string): string => isoDate.slice(0, "YYYY-MM-DD".length);
+const dayInMs = 86_400_000;
+
+const startOfDay = (isoDay: string): Date => new Date(`${isoDay}T00:00:00.000Z`);
+
+const startOfNextDay = (isoDay: string): Date => new Date(startOfDay(isoDay).getTime() + dayInMs);
+
+const escapeLike = (text: string): string => text.replaceAll(/[\\%_]/gu, String.raw`\$&`);
 
 export const contains =
-  <Row>(field: (row: Row) => string): Matcher<Row, string> =>
-  (row, needle) =>
-    field(row).toLowerCase().includes(needle.toLowerCase());
+  (column: PgColumn): Condition<string> =>
+  (needle) =>
+    ilike(column, `%${escapeLike(needle)}%`);
 
 export const equals =
-  <Row, Value>(field: (row: Row) => Value): Matcher<Row, Value> =>
-  (row, value) =>
-    field(row) === value;
+  <Value>(column: PgColumn): Condition<Value> =>
+  (value) =>
+    eq(column, value);
 
 export const inRange =
-  <Row>(field: (row: Row) => number): Matcher<Row, Range> =>
-  (row, { min, max }) =>
-    (min === undefined || field(row) >= min) && (max === undefined || field(row) <= max);
+  (column: PgColumn): Condition<Range> =>
+  ({ min, max }) =>
+    and(min === undefined ? undefined : gte(column, min), max === undefined ? undefined : lte(column, max));
 
 export const inDateRange =
-  <Row>(field: (row: Row) => string): Matcher<Row, DateRange> =>
-  (row, { from, to }) =>
-    (from === undefined || isoDay(field(row)) >= from) && (to === undefined || isoDay(field(row)) <= to);
+  (column: PgColumn): Condition<DateRange> =>
+  ({ from, to }) =>
+    and(from === undefined ? undefined : gte(column, startOfDay(from)), to === undefined ? undefined : lt(column, startOfNextDay(to)));
 
 export const oneOf =
-  <Row, Value>(field: (row: Row) => Value | undefined): Matcher<Row, readonly Value[]> =>
-  (row, values) => {
-    const value = field(row);
+  <Value>(column: PgColumn): Condition<readonly Value[]> =>
+  (values) =>
+    inArray(column, [...values]);
 
-    return value !== undefined && values.includes(value);
-  };
+const conditionFor = <Value>(condition: Condition<NonNullable<Value>>, value: Value): SQL | undefined =>
+  value === undefined || value === null ? undefined : condition(value);
 
-const compareValues = (a: string | number, b: string | number): number =>
-  typeof a === "number" && typeof b === "number" ? a - b : String(a).localeCompare(String(b));
+const whereOf = <Sort extends string, Filters>({ filters: conditions }: ListSpec<Sort, Filters>, filters: Filters): SQL | undefined =>
+  and(
+    ...Object.keys(conditions)
+      .filter((key): key is Extract<keyof Filters, string> => key in conditions)
+      .map((key) => conditionFor(conditions[key], filters[key])),
+  );
 
-const matchesFilter = <Row, Value>(row: Row, matcher: Matcher<Row, NonNullable<Value>>, value: Value): boolean =>
-  value === undefined || value === null || matcher(row, value);
-
-const matchesFilters = <Row, Sort extends string, Filters>(
-  row: Row,
-  { filters: matchers }: ListSpec<Row, Sort, Filters>,
-  filters: Filters,
-): boolean =>
-  Object.keys(matchers)
-    .filter((key): key is Extract<keyof Filters, string> => key in matchers)
-    .every((key) => matchesFilter(row, matchers[key], filters[key]));
-
-const sortRows = <Row, Sort extends string, Filters>(
-  rows: readonly Row[],
-  spec: ListSpec<Row, Sort, Filters>,
-  query: ListQuery<Sort, Filters>,
-): readonly Row[] => {
+const orderOf = <Sort extends string, Filters>(spec: ListSpec<Sort, Filters>, query: ListQuery<Sort, Filters>): readonly SQL[] => {
   if (query.sortBy === undefined) {
-    return rows;
+    return [];
   }
 
-  const sortKey = spec.sort[query.sortBy];
-  const direction = query.sortDirection === "descending" ? -1 : 1;
+  const column = spec.sort[query.sortBy];
 
-  return rows.toSorted((a, b) => direction * compareValues(sortKey(a), sortKey(b)));
+  return [query.sortDirection === "descending" ? desc(column) : asc(column)];
 };
 
-export const applyListQuery = <Row, Sort extends string, Filters>(
-  rows: readonly Row[],
-  spec: ListSpec<Row, Sort, Filters>,
-  query: ListQuery<Sort, Filters>,
-): ListPage<Row> => {
-  const sorted = sortRows(
-    rows.filter((row) => matchesFilters(row, spec, query.filters)),
-    spec,
-    query,
-  );
-  const start = (query.page - 1) * query.pageLimit;
-  const pageWithLookahead = sorted.slice(start, start + query.pageLimit + 1);
+export type ListClauses = Readonly<{ where: SQL | undefined; orderBy: readonly SQL[]; limit: number; offset: number }>;
 
-  return { items: pageWithLookahead.slice(0, query.pageLimit), hasNextPage: pageWithLookahead.length > query.pageLimit };
+export const applyListQuery = async <Row, Sort extends string, Filters>(
+  select: (clauses: ListClauses) => Promise<readonly Row[]>,
+  spec: ListSpec<Sort, Filters>,
+  query: ListQuery<Sort, Filters>,
+): Promise<ListPage<Row>> => {
+  const rows = await select({
+    where: whereOf(spec, query.filters),
+    orderBy: orderOf(spec, query),
+    limit: query.pageLimit + 1,
+    offset: (query.page - 1) * query.pageLimit,
+  });
+
+  return { items: rows.slice(0, query.pageLimit), hasNextPage: rows.length > query.pageLimit };
 };

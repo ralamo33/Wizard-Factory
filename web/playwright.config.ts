@@ -1,8 +1,17 @@
+import { existsSync } from "node:fs";
+
 import { defineConfig, devices } from "@playwright/test";
+
+const rootEnvFile = new URL("../.env", import.meta.url);
+
+if (existsSync(rootEnvFile)) {
+  process.loadEnvFile(rootEnvFile);
+}
 
 const isCi = process.env["CI"] !== undefined;
 const apiPort = "3100";
 const webPort = "8180";
+const webOrigin = `http://localhost:${webPort}`;
 const ports = { API_PORT: apiPort, WEB_PORT: webPort };
 
 export default defineConfig({
@@ -13,7 +22,7 @@ export default defineConfig({
   workers: isCi ? 1 : "50%",
   reporter: isCi ? [["github"], ["html", { open: "never" }]] : "html",
   use: {
-    baseURL: `http://localhost:${webPort}`,
+    baseURL: webOrigin,
     reducedMotion: "reduce",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
@@ -24,12 +33,12 @@ export default defineConfig({
     {
       command: "pnpm --filter @wizard/trpc start",
       url: `http://localhost:${apiPort}/listUsers`,
-      env: ports,
+      env: { ...ports, WEB_ORIGIN: webOrigin },
       reuseExistingServer: !isCi,
     },
     {
       command: "pnpm build && pnpm preview",
-      url: `http://localhost:${webPort}`,
+      url: webOrigin,
       env: ports,
       reuseExistingServer: !isCi,
     },

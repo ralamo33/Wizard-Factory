@@ -1,4 +1,7 @@
-import type { ListUsersPage, ListUsersQuery } from "@wizard/domain";
-import * as userStore from "@wizard/store/identity";
+import type { Result } from "@praha/byethrow";
+import type { ListUsersPage, ListUsersQuery, Viewer } from "@wizard/domain";
+import { users } from "@wizard/store/identity";
+import { type DatabaseError, transactionSealed } from "@wizard/store/shared";
 
-export const listUsers = (query: ListUsersQuery): ListUsersPage => userStore.listUsers(query);
+export const listUsers = async (viewer: Viewer, query: ListUsersQuery): Result.ResultAsync<ListUsersPage, DatabaseError> =>
+  transactionSealed(viewer, async (tx) => users(tx).list(query));

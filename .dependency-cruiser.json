@@ -9,7 +9,9 @@
     },
     {
       "from": { "path": "^service/src/([^/]+)/" },
-      "to": { "path": "^(service/src/$1/|service/src/[^/]+/index\\.ts$|store/src/$1/index\\.ts$|domain/src/)" }
+      "to": {
+        "path": "^(service/src/$1/|service/src/[^/]+/index\\.ts$|store/src/$1/index\\.ts$|store/src/shared/(index|dbTestOnly)\\.ts$|domain/src/)"
+      }
     },
     { "from": { "path": "^service/src/index\\.ts$" }, "to": { "path": "^service/src/[^/]+/index\\.ts$" } },
     { "from": { "path": "^trpc/src/" }, "to": { "path": "^(trpc/src/|service/src/index\\.ts$|domain/src/)" } },
@@ -32,6 +34,13 @@
   "allowedSeverity": "error",
   "forbidden": [
     {
+      "name": "db-test-only-from-tests-only",
+      "comment": "Test helpers that bypass transactionSealed are reached only from test files.",
+      "severity": "error",
+      "from": { "pathNot": "\\.test\\.ts$" },
+      "to": { "path": "^store/src/shared/dbTestOnly\\.ts$" }
+    },
+    {
       "name": "store-only-from-service",
       "comment": "Mutable state is reached only through service.",
       "severity": "error",
@@ -51,6 +60,20 @@
       "severity": "error",
       "from": { "path": "^web/src/" },
       "to": { "path": "node_modules/zod/" }
+    },
+    {
+      "name": "clerk-only-in-web-and-trpc",
+      "comment": "Clerk stays at the edges; service and domain see only the domain Viewer.",
+      "severity": "error",
+      "from": { "pathNot": "^(web|trpc)/" },
+      "to": { "path": "node_modules/@clerk/" }
+    },
+    {
+      "name": "db-libs-only-in-store",
+      "comment": "Drizzle, postgres and Supabase are reached only through store.",
+      "severity": "error",
+      "from": { "pathNot": "^store/" },
+      "to": { "path": "node_modules/(drizzle-orm|postgres|@supabase)/" }
     },
     {
       "name": "service-no-ancestor-imports",

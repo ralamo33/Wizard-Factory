@@ -4,7 +4,7 @@
   "type": "module",
   "exports": "./src/index.ts",
   "scripts": {
-    "test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
+    "test": "node --experimental-strip-types --env-file-if-exists=../.env --test --test-force-exit \"src/**/*.test.ts\""
   },
   "dependencies": {
     "@praha/byethrow": "0.13.0",

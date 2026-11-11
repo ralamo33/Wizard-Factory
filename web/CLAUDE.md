@@ -60,7 +60,7 @@ TanStack Form, validated with the schema from `@wizard/domain`; `web` never impo
 ## Accessibility
 
 - Follow all accessibility guidelines. Give key components, especially ones used in e2e tests, proper roles and accessible names.
-- `jsx-a11y` strict lints the source. Every e2e test runs axe (WCAG 2.2 AA) through `e2e/fixtures.ts`, so specs import `test` from there. Lint can't see contrast or composed markup, and axe can't see code no test renders, so keep both.
+- `jsx-a11y` strict lints the source.
 - Animations respect `prefers-reduced-motion`.
 
 ## Animation
@@ -77,6 +77,13 @@ TanStack Form, validated with the schema from `@wizard/domain`; `web` never impo
 - Animate to direct attention
 - Animate to react to user inputs, these are typically routine actions that should recieve routine animations, such as opening a Drawer
 - Animate for highly emotional moments, these should recieve special animations
+
+## Auth
+
+- Auth UI uses Clerk's pre-built components (`<SignIn />`, `<SignUp />`, `<UserButton />`, `<Show>`). Custom flows (`useSignIn`/`useSignUp`) are banned.
+- Clerk appearance uses semantic tokens only.
+- Auth state reaches routes through router context. Protected routes guard in `beforeLoad`.
+- The UI hides things for UX only. The server (trpc + RLS) is the real gate.
 
 ## E2E locators
 

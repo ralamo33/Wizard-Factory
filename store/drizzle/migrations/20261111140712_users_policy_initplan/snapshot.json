@@ -1,0 +1,54 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "630ec01d-3c2e-44f1-90f5-53722c7bf347",
+  "prevIds": ["eadee436-3ce7-4a2d-b8bc-514e43f7cabe"],
+  "footprints": [
+    {
+      "statementType": "alter_policy",
+      "statementTarget": ["table", "public", "users"],
+      "writes": ["s|pol|public.users.users are created by their owner"],
+      "reads": ["n|tbl|public.users", "n|sch|public", "n|role|authenticated"],
+      "sqlHash": "da059184c9e4be2f"
+    },
+    {
+      "statementType": "alter_policy",
+      "statementTarget": ["table", "public", "users"],
+      "writes": ["s|pol|public.users.users are updated by their owner"],
+      "reads": ["n|tbl|public.users", "n|sch|public", "n|role|authenticated"],
+      "sqlHash": "ea557e8d43f8bba9"
+    },
+    {
+      "statementType": "alter_policy",
+      "statementTarget": ["table", "public", "users"],
+      "writes": ["s|pol|public.users.users are deleted by their owner"],
+      "reads": ["n|tbl|public.users", "n|sch|public", "n|role|authenticated"],
+      "sqlHash": "df6c1df6c419b4f0"
+    }
+  ],
+  "deltas": [
+    {
+      "op": "alter",
+      "key": "policies\u0000[\"public\",\"users\",\"users are created by their owner\"]",
+      "set": {
+        "withCheck": "((select auth.jwt())->>'sub') = user_id"
+      }
+    },
+    {
+      "op": "alter",
+      "key": "policies\u0000[\"public\",\"users\",\"users are updated by their owner\"]",
+      "set": {
+        "using": "((select auth.jwt())->>'sub') = user_id",
+        "withCheck": "((select auth.jwt())->>'sub') = user_id"
+      }
+    },
+    {
+      "op": "alter",
+      "key": "policies\u0000[\"public\",\"users\",\"users are deleted by their owner\"]",
+      "set": {
+        "using": "((select auth.jwt())->>'sub') = user_id"
+      }
+    }
+  ]
+}

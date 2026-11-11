@@ -33,6 +33,16 @@ pnpm --filter @wizard/trpc start   # API on :3000 (API_PORT)
 pnpm --filter @wizard/web start    # Web on :8080 (WEB_PORT), proxies /trpc to the API
 ```
 
+## Run with Docker
+
+Copy `.env-docker.example` to `.env-docker` and fill in the values, then:
+
+```sh
+docker compose --env-file .env-docker up --build
+```
+
+Open http://localhost:8080. `WEB_ORIGIN` must match the origin in the browser. The containers don't run migrations; apply them against Supabase separately.
+
 ## Checks
 
 ```sh

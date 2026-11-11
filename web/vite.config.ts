@@ -8,6 +8,9 @@ const apiPort = process.env["API_PORT"] ?? "3000";
 
 export default defineConfig({
   plugins: [tanstackRouter({ target: "react", autoCodeSplitting: true }), react(), tailwindcss()],
+  envDir: "..",
+  // The root .env also holds server secrets (CLERK_SECRET_KEY, CLERK_JWT_KEY, DATABASE_URL), so never widen this to "CLERK_".
+  envPrefix: ["VITE_", "CLERK_PUBLISHABLE_"],
   build: {
     chunkSizeWarningLimit: 5000,
   },

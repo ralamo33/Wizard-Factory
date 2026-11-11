@@ -1,0 +1,30 @@
+name: wizard-factory
+
+services:
+  api:
+    build:
+      context: .
+      target: api
+    env_file: .env-docker
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('net').connect(process.env.API_PORT).on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      target: web
+      args:
+        VITE_CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY}
+    environment:
+      API_PORT: ${API_PORT}
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { orderSchema } from "./order.ts";
+import { clerkUserIdSchema } from "./viewer.ts";
 
 export const userSchema = z
   .object({
@@ -19,6 +20,7 @@ export const storedUserSchema = userSchema
   .unwrap()
   .extend({
     id: z.string({ error: "A stored user needs an id." }),
+    userId: clerkUserIdSchema,
     swornOn: z.iso.datetime({ error: "Sworn on must be an ISO date and time." }),
   })
   .readonly();

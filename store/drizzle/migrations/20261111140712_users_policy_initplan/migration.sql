@@ -1,0 +1,3 @@
+ALTER POLICY "users are created by their owner" ON "users" TO "authenticated" WITH CHECK (((select auth.jwt())->>'sub') = user_id);--> statement-breakpoint
+ALTER POLICY "users are updated by their owner" ON "users" TO "authenticated" USING (((select auth.jwt())->>'sub') = user_id) WITH CHECK (((select auth.jwt())->>'sub') = user_id);--> statement-breakpoint
+ALTER POLICY "users are deleted by their owner" ON "users" TO "authenticated" USING (((select auth.jwt())->>'sub') = user_id);

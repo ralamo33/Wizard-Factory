@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { type ListUsersQuery, listUsersQuerySchema } from "@wizard/domain";
 import type { JSX } from "react";
 
@@ -21,5 +21,10 @@ const Squires = (): JSX.Element => {
 
 export const Route = createFileRoute("/squires")({
   validateSearch: listUsersQuerySchema,
+  beforeLoad: ({ context, location }) => {
+    if (!context.auth.isSignedIn()) {
+      redirect({ href: `/sign-in?${new URLSearchParams({ redirect_url: location.href }).toString()}`, throw: true });
+    }
+  },
   component: Squires,
 });

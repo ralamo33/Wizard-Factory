@@ -9,5 +9,6 @@ The functions that act on domain data. Everything that creates or changes domain
 - `service/src/index.ts` only re-exports context indexes.
 - A context reaches only its own store context, via `@wizard/store/<context>`. Add the subpath to `store/package.json` `exports` for each new context.
 - Wrap store functions in service functions; never re-export them. Enforced by eslint `no-restricted-syntax` on `service/src`.
+- Functions acting for a user take `viewer: Viewer` first and run store work inside `transactionSealed`.
 
 Import rules are enforced by dependency-cruiser.

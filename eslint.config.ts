@@ -26,6 +26,12 @@ const namingConvention = [
   { selector: "variable", types: ["boolean"], format: ["PascalCase"], prefix: ["is", "has", "should", "can"] },
 ];
 
+const drizzleTypes = [
+  { from: "package", package: "drizzle-orm", name: ["PgColumn", "SQL", "PgAsyncTransaction", "PostgresJsDatabase"] },
+  { from: "package", package: "postgres", name: ["Sql"] },
+  { from: "lib", name: ["Date"] },
+];
+
 const restrictedSyntax = [
   {
     selector: "TSTypeReference[typeName.name='Record'][typeArguments.params.0.type=/^TS(String|Number)Keyword$/]",
@@ -136,7 +142,7 @@ const contextExportSyntax = [
 ];
 
 export default defineConfig(
-  globalIgnores(["**/routeTree.gen.ts", "**/dist/"]),
+  globalIgnores(["**/routeTree.gen.ts", "**/dist/", "**/.agents/"]),
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
@@ -178,7 +184,7 @@ export default defineConfig(
       "@typescript-eslint/promise-function-async": "error",
       "@typescript-eslint/no-shadow": "error",
       "@typescript-eslint/strict-void-return": "error",
-      "@typescript-eslint/prefer-readonly-parameter-types": ["error", { ignoreInferredTypes: true }],
+      "@typescript-eslint/prefer-readonly-parameter-types": ["error", { ignoreInferredTypes: true, allow: drizzleTypes }],
       "@typescript-eslint/naming-convention": ["error", ...namingConvention],
       eqeqeq: "error",
       "no-implicit-coercion": "error",
@@ -255,7 +261,7 @@ export default defineConfig(
   {
     files: ["trpc/src/**/*.ts"],
     rules: {
-      "wizard/function-exports": ["error", { allow: ["appRouter", "publicProcedure"] }],
+      "wizard/function-exports": ["error", { allow: ["appRouter", "publicProcedure", "protectedProcedure", "permissionProcedure"] }],
     },
   },
   {
@@ -383,6 +389,12 @@ export default defineConfig(
     },
   },
   {
+    files: ["web/src/routes/**"],
+    rules: {
+      "unicorn/filename-case": ["error", { cases: { camelCase: true, kebabCase: true } }],
+    },
+  },
+  {
     // TanStack Router ignores `-`-prefixed folders, which is how route-private code lives beside its route.
     files: ["web/src/routes/**/-*/**"],
     rules: {
@@ -391,6 +403,12 @@ export default defineConfig(
   },
   {
     files: ["web/vite.config.ts", "web/playwright.config.ts"],
+    rules: {
+      "import-x/no-default-export": "off",
+    },
+  },
+  {
+    files: ["store/drizzle.config.ts"],
     rules: {
       "import-x/no-default-export": "off",
     },

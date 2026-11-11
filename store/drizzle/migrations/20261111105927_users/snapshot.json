@@ -1,0 +1,241 @@
+{
+  "type": "base",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "f0354f28-a8de-45c9-900e-65c100e45d0b",
+  "prevIds": ["00000000-0000-0000-0000-000000000000"],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": ["table", "public", "users"],
+      "writes": [
+        "s|tbl|public.users",
+        "n|tbl|public.users",
+        "e|tbl|public.users",
+        "n|rel|public.users",
+        "n|type|public.users",
+        "n|rel|public.users_pkey"
+      ],
+      "reads": ["n|sch|public"]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": ["index", "public", "users", "users_user_id_idx"],
+      "writes": [
+        "s|idx|public.users_user_id_idx",
+        "n|idx|public.users_user_id_idx",
+        "e|idx|public.users_user_id_idx",
+        "n|rel|public.users_user_id_idx"
+      ],
+      "reads": ["n|tbl|public.users", "n|sch|public", "n|col|public.users.user_id"]
+    },
+    {
+      "statementType": "create_policy",
+      "statementTarget": ["table", "public", "users"],
+      "writes": [
+        "s|pol|public.users.users are readable by everyone signed in",
+        "n|pol|public.users.users are readable by everyone signed in",
+        "e|pol|public.users.users are readable by everyone signed in"
+      ],
+      "reads": ["n|tbl|public.users", "n|sch|public", "n|role|authenticated", "e|rls|public.users"]
+    },
+    {
+      "statementType": "create_policy",
+      "statementTarget": ["table", "public", "users"],
+      "writes": [
+        "s|pol|public.users.users are created by their owner",
+        "n|pol|public.users.users are created by their owner",
+        "e|pol|public.users.users are created by their owner"
+      ],
+      "reads": ["n|tbl|public.users", "n|sch|public", "n|role|authenticated", "e|rls|public.users"]
+    },
+    {
+      "statementType": "create_policy",
+      "statementTarget": ["table", "public", "users"],
+      "writes": [
+        "s|pol|public.users.users are updated by their owner",
+        "n|pol|public.users.users are updated by their owner",
+        "e|pol|public.users.users are updated by their owner"
+      ],
+      "reads": ["n|tbl|public.users", "n|sch|public", "n|role|authenticated", "e|rls|public.users"]
+    },
+    {
+      "statementType": "create_policy",
+      "statementTarget": ["table", "public", "users"],
+      "writes": [
+        "s|pol|public.users.users are deleted by their owner",
+        "n|pol|public.users.users are deleted by their owner",
+        "e|pol|public.users.users are deleted by their owner"
+      ],
+      "reads": ["n|tbl|public.users", "n|sch|public", "n|role|authenticated", "e|rls|public.users"]
+    }
+  ],
+  "ddl": [
+    {
+      "schema": "public",
+      "name": "users",
+      "isRlsEnabled": true,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": {
+        "type": "always",
+        "name": "users_id_seq",
+        "increment": "1",
+        "startWith": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "cache": 1,
+        "cycle": false
+      },
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "user_id",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "(auth.jwt()->>'sub')",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "name",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "age",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "order",
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "sworn_on",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "users_user_id_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "users_pkey",
+      "columns": ["id"],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "users are readable by everyone signed in",
+      "as": "PERMISSIVE",
+      "for": "SELECT",
+      "roles": ["authenticated"],
+      "using": "true",
+      "withCheck": null,
+      "entityType": "policies"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "users are created by their owner",
+      "as": "PERMISSIVE",
+      "for": "INSERT",
+      "roles": ["authenticated"],
+      "using": null,
+      "withCheck": "(select auth.jwt()->>'sub') = user_id",
+      "entityType": "policies"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "users are updated by their owner",
+      "as": "PERMISSIVE",
+      "for": "UPDATE",
+      "roles": ["authenticated"],
+      "using": "(select auth.jwt()->>'sub') = user_id",
+      "withCheck": "(select auth.jwt()->>'sub') = user_id",
+      "entityType": "policies"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "users are deleted by their owner",
+      "as": "PERMISSIVE",
+      "for": "DELETE",
+      "roles": ["authenticated"],
+      "using": "(select auth.jwt()->>'sub') = user_id",
+      "withCheck": null,
+      "entityType": "policies"
+    }
+  ]
+}

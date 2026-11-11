@@ -1,3 +1,4 @@
+import { Show } from "@clerk/react";
 import { createFileRoute } from "@tanstack/react-router";
 import type { JSX } from "react";
 
@@ -12,13 +13,17 @@ const Home = (): JSX.Element => (
     <HeroSection sigilPoints={orders} />
     <ImmortalWordsSection />
     <TenOrdersSection orders={orders} />
-    <SquiresSection accents={orders} />
+    <Show when="signed-in">
+      <SquiresSection accents={orders} />
+    </Show>
   </main>
 );
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
-    await prefetchSquires(context.queryClient);
+    if (context.auth.isSignedIn()) {
+      await prefetchSquires(context.queryClient);
+    }
   },
   component: Home,
 });

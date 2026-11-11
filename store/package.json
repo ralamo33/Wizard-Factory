@@ -3,12 +3,25 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./identity": "./src/identity/index.ts"
+    "./identity": "./src/identity/index.ts",
+    "./shared": "./src/shared/index.ts",
+    "./dbTestOnly": "./src/shared/dbTestOnly.ts"
   },
   "scripts": {
-    "test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
+    "test": "node --experimental-strip-types --env-file-if-exists=../.env --test \"src/**/*.test.ts\"",
+    "db:generate": "node --env-file-if-exists=../.env node_modules/drizzle-kit/bin.cjs generate",
+    "db:migrate": "node --env-file=../.env node_modules/drizzle-kit/bin.cjs migrate",
+    "db:setup-local": "node --experimental-strip-types --env-file=../.env src/shared/setupLocalDb.ts",
+    "db:advisors": "supabase db advisors --type all --level info"
   },
   "dependencies": {
-    "@wizard/domain": "workspace:*"
+    "@praha/byethrow": "0.13.0",
+    "@wizard/domain": "workspace:*",
+    "drizzle-orm": "1.0.0-rc.5",
+    "postgres": "4.1.1"
+  },
+  "devDependencies": {
+    "drizzle-kit": "1.0.0-rc.5",
+    "supabase": "3.1.0"
   }
 }

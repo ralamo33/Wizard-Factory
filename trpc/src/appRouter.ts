@@ -2,17 +2,16 @@ import { listUsersPageSchema, listUsersQuerySchema, userSchema } from "@wizard/d
 import { findUser, listUsers, saveUser } from "@wizard/service";
 import { z } from "zod";
 
-import { publicProcedure, router } from "./trpc.ts";
+import { orInternalError } from "./orInternalError.ts";
+import { protectedProcedure, router } from "./trpc.ts";
 
 export const appRouter = router({
-  userById: publicProcedure.input(z.string()).query((opts) => findUser(opts.input)),
-  createUser: publicProcedure.input(userSchema).mutation((opts) => {
-    saveUser(opts.input);
-  }),
-  listUsers: publicProcedure
+  userById: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => orInternalError(await findUser(ctx.viewer, input))),
+  createUser: protectedProcedure.input(userSchema).mutation(async ({ ctx, input }) => orInternalError(await saveUser(ctx.viewer, input))),
+  listUsers: protectedProcedure
     .input(listUsersQuerySchema)
     .output(listUsersPageSchema)
-    .query((opts) => listUsers(opts.input)),
+    .query(async ({ ctx, input }) => orInternalError(await listUsers(ctx.viewer, input))),
 });
 
 export type AppRouter = typeof appRouter;
