@@ -12,6 +12,10 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      ADMIN_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:55322/postgres
+      DATABASE_PASSWORD: ci-app-user
+      DATABASE_URL: postgresql://app_user:ci-app-user@127.0.0.1:55322/postgres
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -19,7 +23,13 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 3.1.0
+      - run: supabase start --workdir store -x realtime,storage-api,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @wizard/store exec drizzle-kit migrate
+      - run: pnpm --filter @wizard/store exec node --experimental-strip-types src/shared/setupDb.ts
       - run: pnpm check
 
   gitleaks:
@@ -34,6 +44,15 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    environment: docker-env
+    env:
+      ADMIN_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:55322/postgres
+      DATABASE_PASSWORD: ci-app-user
+      DATABASE_URL: postgresql://app_user:ci-app-user@127.0.0.1:55322/postgres
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      CLERK_JWT_KEY: ${{ secrets.CLERK_JWT_KEY }}
+      CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
+      VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -41,7 +60,13 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 3.1.0
+      - run: supabase start --workdir store -x realtime,storage-api,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @wizard/store exec drizzle-kit migrate
+      - run: pnpm --filter @wizard/store exec node --experimental-strip-types src/shared/setupDb.ts
       - run: pnpm --filter @wizard/web exec playwright install --with-deps chromium
       - run: pnpm test:e2e
       - uses: actions/upload-artifact@v4
