@@ -4,7 +4,7 @@
   "type": "module",
   "exports": "./src/appRouter.ts",
   "scripts": {
-    "start": "node --experimental-strip-types --env-file-if-exists=../.env src/server.ts",
+    "start": "node --experimental-strip-types --env-file=../.env src/server.ts",
     "test": "node --experimental-strip-types --env-file-if-exists=../.env --test --test-force-exit \"src/**/*.test.ts\""
   },
   "dependencies": {
