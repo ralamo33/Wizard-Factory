@@ -9,7 +9,7 @@ import { queryClient } from "./api/trpc.ts";
 import { ThemeProvider } from "./contextsGlobal/themeContext.tsx";
 import { routeTree } from "./routeTree.gen.ts";
 
-const publishableKey: unknown = import.meta.env["CLERK_PUBLISHABLE_KEY"];
+const publishableKey: unknown = import.meta.env["VITE_CLERK_PUBLISHABLE_KEY"];
 
 const signedOut = { isSignedIn: (): boolean => false };
 
