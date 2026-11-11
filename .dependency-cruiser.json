@@ -1,4 +1,35 @@
 {
+  "allowed": [
+    { "from": {}, "to": { "path": "node_modules" } },
+    { "from": {}, "to": { "dependencyTypes": ["core"] } },
+    { "from": { "path": "^domain/src/" }, "to": { "path": "^domain/src/" } },
+    {
+      "from": { "path": "^store/src/([^/]+)/" },
+      "to": { "path": "^(store/src/$1/|store/src/shared/|domain/src/)" }
+    },
+    {
+      "from": { "path": "^service/src/([^/]+)/" },
+      "to": { "path": "^(service/src/$1/|service/src/[^/]+/index\\.ts$|store/src/$1/index\\.ts$|domain/src/)" }
+    },
+    { "from": { "path": "^service/src/index\\.ts$" }, "to": { "path": "^service/src/[^/]+/index\\.ts$" } },
+    { "from": { "path": "^trpc/src/" }, "to": { "path": "^(trpc/src/|service/src/index\\.ts$|domain/src/)" } },
+    { "from": { "path": "^web/src/api/" }, "to": { "path": "^(web/src/api/|trpc/src/)" } },
+    {
+      "from": { "path": "^web/src/contextsGlobal/" },
+      "to": { "path": "^web/src/(contextsGlobal|genericComponents)/" }
+    },
+    { "from": { "path": "^web/src/genericComponents/" }, "to": { "path": "^web/src/genericComponents/" } },
+    {
+      "from": { "path": "^web/src/domainViews/" },
+      "to": { "path": "^(web/src/(domainViews|genericComponents|api)/|domain/src/)" }
+    },
+    {
+      "from": { "path": "^web/src/routes/" },
+      "to": { "path": "^(web/src/(routes|domainViews|genericComponents|contextsGlobal)/|domain/src/)" }
+    },
+    { "from": { "path": "^web/src/(main\\.tsx|routeTree\\.gen\\.ts)$" }, "to": {} }
+  ],
+  "allowedSeverity": "error",
   "forbidden": [
     {
       "name": "store-only-from-service",
@@ -15,18 +46,11 @@
       "to": { "path": "^service/" }
     },
     {
-      "name": "trpc-only-from-web",
-      "comment": "The API is consumed only by web.",
+      "name": "web-no-zod",
+      "comment": "web validates through @wizard/domain schemas and never imports zod.",
       "severity": "error",
-      "from": { "pathNot": "^(trpc|web)/" },
-      "to": { "path": "^trpc/" }
-    },
-    {
-      "name": "nothing-imports-web",
-      "comment": "web is the top of the graph.",
-      "severity": "error",
-      "from": { "pathNot": "^web/" },
-      "to": { "path": "^web/" }
+      "from": { "path": "^web/src/" },
+      "to": { "path": "node_modules/zod/" }
     },
     {
       "name": "service-no-ancestor-imports",
@@ -62,13 +86,6 @@
       "severity": "error",
       "from": { "path": "^service/src/index\\.ts$" },
       "to": { "path": "^service/src/", "pathNot": "^service/src/[^/]+/index\\.ts$" }
-    },
-    {
-      "name": "service-context-owns-its-store",
-      "comment": "A service context reaches only its own store context; other contexts' data goes through their service API.",
-      "severity": "error",
-      "from": { "path": "^service/src/([^/]+)/" },
-      "to": { "path": "^store/src/", "pathNot": "^store/src/$1/" }
     },
     {
       "name": "web-no-ancestor-imports",
@@ -143,13 +160,6 @@
       "severity": "error",
       "from": { "pathNot": "^web/src/routes(?!.*/-)/.*\\.tsx$|Section\\.tsx$" },
       "to": { "path": "^web/src/domainViews/[^/]+/index\\.ts$" }
-    },
-    {
-      "name": "contexts-global-below-domain-views",
-      "comment": "App-wide contexts sit under domain views and routes, so they never import them.",
-      "severity": "error",
-      "from": { "path": "^web/src/contextsGlobal/" },
-      "to": { "path": "^web/src/(domainViews|routes)/" }
     },
     {
       "name": "contexts-global-only-from-containers",
